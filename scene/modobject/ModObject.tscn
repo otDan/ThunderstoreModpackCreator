@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://DefaultTheme.tres" type="Theme" id=1]
+
+[node name="Control" type="Control"]
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton" type="CheckButton" parent="."]
+margin_right = 158.0
+margin_bottom = 35.0
+text = "MODNAME"
+__meta__ = {
+"_edit_use_anchors_": false
+}

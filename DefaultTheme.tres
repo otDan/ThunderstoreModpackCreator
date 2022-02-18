@@ -1,0 +1,97 @@
+[gd_resource type="Theme" load_steps=18 format=2]
+
+[ext_resource path="res://font/DefaultFont.tres" type="DynamicFont" id=1]
+[ext_resource path="res://font/Roboto-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://component/clickable_style.tres" type="StyleBox" id=3]
+[ext_resource path="res://component/container_style.tres" type="StyleBox" id=4]
+[ext_resource path="res://component/editable_style.tres" type="StyleBox" id=5]
+[ext_resource path="res://component/focused_style.tres" type="StyleBox" id=6]
+[ext_resource path="res://component/pressed_style.tres" type="StyleBox" id=7]
+[ext_resource path="res://component/tab_style.tres" type="StyleBox" id=8]
+[ext_resource path="res://component/hover_style.tres" type="StyleBox" id=9]
+
+[sub_resource type="DynamicFont" id=8]
+use_mipmaps = true
+extra_spacing_top = 2
+extra_spacing_bottom = 2
+font_data = ExtResource( 2 )
+
+[sub_resource type="StyleBoxEmpty" id=82]
+
+[sub_resource type="StyleBoxEmpty" id=83]
+
+[sub_resource type="DynamicFont" id=9]
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="StyleBoxFlat" id=81]
+bg_color = Color( 0.101961, 0.0941176, 0.0941176, 1 )
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color( 0.235294, 0.235294, 0.235294, 0.509804 )
+border_color = Color( 1, 1, 1, 1 )
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="DynamicFont" id=6]
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 12
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[resource]
+default_font = ExtResource( 1 )
+Button/fonts/font = SubResource( 8 )
+Button/styles/disabled = null
+Button/styles/focus = SubResource( 82 )
+Button/styles/hover = ExtResource( 9 )
+Button/styles/normal = ExtResource( 3 )
+Button/styles/pressed = ExtResource( 7 )
+GraphEdit/styles/bg = SubResource( 83 )
+GraphNode/constants/port_offset = -15
+GraphNode/styles/frame = ExtResource( 4 )
+Label/fonts/font = SubResource( 9 )
+LineEdit/styles/focus = ExtResource( 6 )
+LineEdit/styles/normal = ExtResource( 5 )
+LineEdit/styles/read_only = ExtResource( 5 )
+Panel/styles/panel = SubResource( 81 )
+PanelContainer/styles/panel = ExtResource( 4 )
+TabContainer/styles/panel = ExtResource( 4 )
+TabContainer/styles/tab_bg = SubResource( 1 )
+TabContainer/styles/tab_fg = ExtResource( 8 )
+TextEdit/styles/focus = ExtResource( 6 )
+TextEdit/styles/normal = SubResource( 1 )
+Tree/colors/custom_button_font_highlight = Color( 0.94, 0.94, 0.94, 1 )
+Tree/colors/drop_position_color = Color( 1, 0.3, 0.2, 1 )
+Tree/colors/font_color = Color( 0.69, 0.69, 0.69, 1 )
+Tree/colors/font_color_selected = Color( 1, 1, 1, 1 )
+Tree/colors/guide_color = Color( 0, 0, 0, 0.1 )
+Tree/colors/relationship_line_color = Color( 0.27, 0.27, 0.27, 1 )
+Tree/colors/title_button_color = Color( 0.88, 0.88, 0.88, 1 )
+Tree/constants/button_margin = 4
+Tree/constants/draw_guides = 1
+Tree/constants/draw_relationship_lines = 0
+Tree/constants/hseparation = 4
+Tree/constants/item_margin = 12
+Tree/constants/scroll_border = 4
+Tree/constants/scroll_speed = 12
+Tree/constants/vseparation = 4
+Tree/fonts/font = SubResource( 6 )
+Tree/fonts/title_button_font = SubResource( 7 )
+Tree/icons/arrow = null
+Tree/icons/arrow_collapsed = null
+Tree/icons/checked = null
+Tree/icons/select_arrow = null
+Tree/icons/unchecked = null
+Tree/icons/updown = null
+Tree/styles/bg = SubResource( 1 )
+WindowDialog/colors/title_color = Color( 1, 1, 1, 1 )
+WindowDialog/styles/panel = ExtResource( 4 )
