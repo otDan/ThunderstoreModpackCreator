@@ -12,8 +12,9 @@ export(NodePath) var confirmPath
 export(NodePath) var resultPath
 export(NodePath) var modExportPath
 
-export(NodePath) var editPath
+export(NodePath) var changePath
 export(NodePath) var gridPath
+export(NodePath) var scrollPath
 
 onready var modDisplay : Control = get_node(modDisplayPath)
 onready var codeInput : LineEdit = get_node(codeInputPath)
@@ -22,8 +23,9 @@ onready var confirm : Button = get_node(confirmPath)
 onready var resultText : RichTextLabel = get_node(resultPath)
 onready var modExport : MarginContainer = get_node(modExportPath)
 
-onready var edit : Button = get_node(editPath)
+onready var change : Button = get_node(changePath)
 onready var grid : GridContainer = get_node(gridPath)
+onready var scroll : ScrollContainer = get_node(scrollPath)
 
 var mods : Array
 	
@@ -36,10 +38,14 @@ func _on_Confirm_pressed() -> void:
 	handleConfirm()
 	
 func _on_CodeInput_text_entered(new_text):
-	handleConfirm()
+	if !confirm.disabled:
+		handleConfirm()
 	
-func _on_Edit_pressed():
+func _on_Change_pressed():
 	unload_Profile()
+	
+func _on_EditInfo_pressed():
+	pass # Replace with function body.
 
 func handleConfirm():
 	confirm.disabled = true
@@ -54,10 +60,18 @@ func handleConfirm():
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	var response : String = body.get_string_from_utf8()
 	
-	if response.length() < 100:
+	if response == "":
 		response("Invalid code")
 		return
 		
+	if response == '{"message":"Paste not found."}':
+		response("Invalid code")
+		return
+	
+	if response.begins_with("Cannot GET"):
+		response("Invalid code")
+		return
+	
 	var parsed = response.split("#r2modman\\n")[1].split("\"}")[0]
 	var poolByteZip = Marshalls.base64_to_raw(parsed)
 	
@@ -91,37 +105,46 @@ func unload_Profile():
 	codeInput.editable = true
 	codeInput.text = ""
 	modExport.visible = false
-	edit.visible = false
+	change.visible = false
 	
 func load_Profile(var profile : String):
 	confirm.visible = false
 	response.visible = false
 	codeInput.editable = false
 	modExport.visible = true
-	edit.visible = true
+	change.visible = true
 	
 	var value : Dictionary = yaml.parse(profile)
 	var profileName = value["profileName"]
 	
 	var mods = value["mods"]
 	for loopMod in mods:
-		print(loopMod["name"])
-		var enabled = loopMod["enabled"]
-		var creatormod = loopMod["name"].split("-")
+		
 		if (loopMod["name"]) == "":
 			continue
-		var creator = creatormod[0]
-		var mod = creatormod[1]
+			
+		var enabled = loopMod["enabled"]
+		var creatorMod = loopMod["name"].split("-")
+		var creator = creatorMod[0]
+		var mod : String = creatorMod[1]
 		var version = loopMod["version"]
-		var major = version["major"]
-		var minor = version["minor"]
-		var patch = version["patch"]
+		var major : int = version["major"]
+		var minor : int = version["minor"]
+		var patch : int = version["patch"]
 		
 		var modInstance = modClass.new(mod, creator, major, minor, patch, enabled)
 		mods.append(modInstance)
 		var modCheckButton : CheckButton = CheckButton.new()
 		modCheckButton.set_name(modInstance.get_mod_string())
-		modCheckButton.text = mod
+		if mod.length() > 15:
+			modCheckButton.text = mod.substr(0, 15)
+		else:
+			modCheckButton.text = mod
 		modCheckButton.pressed = enabled
 		grid.add_child(modCheckButton)
-#		print(modInstance.get_mod_string())
+
+func _on_ModDisplay_resized():
+	var screenSize = scroll.get_viewport_rect().size
+	scroll.rect_min_size = Vector2(screenSize.x / 2, screenSize.y / 2.4)
+	
+	grid.columns = screenSize.x / 240

@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scene/maincontrol/SceneManager.gd" type="Script" id=1]
 [ext_resource path="res://font/Roboto-Regular.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://DefaultTheme.tres" type="Theme" id=3]
 [ext_resource path="res://font/DefaultFont.tres" type="DynamicFont" id=4]
+[ext_resource path="res://placeholder.png" type="Texture" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 22
@@ -38,6 +39,17 @@ use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 2 )
 
+[sub_resource type="DynamicFont" id=8]
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 10
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 2 )
+
 [sub_resource type="DynamicFont" id=3]
 size = 15
 use_mipmaps = true
@@ -55,13 +67,14 @@ __meta__ = {
 [node name="SceneManager" type="Node" parent="."]
 script = ExtResource( 1 )
 modDisplayPath = NodePath("../ModDisplay")
-codeInputPath = NodePath("../ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HSplitContainer/CodeInput")
-responsePath = NodePath("../ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/Response")
-confirmPath = NodePath("../ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/CenterContainer/Confirm")
+codeInputPath = NodePath("../ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/HSplitContainer/CodeInput")
+responsePath = NodePath("../ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/Response")
+confirmPath = NodePath("../ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/CenterContainer/Confirm")
 resultPath = NodePath("../Result")
 modExportPath = NodePath("../ModDisplay/VBoxContainer/ModpackExportContainer")
-editPath = NodePath("../ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HSplitContainer/Edit")
-gridPath = NodePath("../ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer/ModsContainer/ScrollContainer/GridContainer")
+changePath = NodePath("../ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/HSplitContainer/Change")
+gridPath = NodePath("../ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModsContainer/ScrollContainer/GridContainer")
+scrollPath = NodePath("../ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModsContainer/ScrollContainer")
 
 [node name="HTTPRequest" type="HTTPRequest" parent="SceneManager"]
 
@@ -96,31 +109,26 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="ModDisplay"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-alignment = 1
+margin_bottom = 7.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="ModDisplay/VBoxContainer"]
-margin_top = 200.0
-margin_right = 1024.0
-margin_bottom = 400.0
-
-[node name="VBoxContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/MarginContainer"]
+[node name="VBoxContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer"]
 margin_right = 1024.0
 margin_bottom = 200.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ModDisplay/VBoxContainer/VBoxContainer"]
 margin_left = 303.0
 margin_right = 721.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 300, 200 )
 alignment = 1
 
-[node name="InputDetails" type="Label" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="InputDetails" type="Label" parent="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer"]
 margin_top = 52.0
 margin_right = 418.0
 margin_bottom = 81.0
@@ -128,13 +136,13 @@ custom_fonts/font = ExtResource( 4 )
 text = "INSERT PROFILE CODE:"
 align = 1
 
-[node name="HSplitContainer" type="HBoxContainer" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="HSplitContainer" type="HBoxContainer" parent="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer"]
 margin_top = 85.0
 margin_right = 418.0
 margin_bottom = 116.0
 custom_constants/separation = 10
 
-[node name="CodeInput" type="LineEdit" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HSplitContainer"]
+[node name="CodeInput" type="LineEdit" parent="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/HSplitContainer"]
 margin_right = 418.0
 margin_bottom = 31.0
 custom_constants/minimum_spaces = 83
@@ -148,14 +156,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Edit" type="Button" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HSplitContainer"]
+[node name="Change" type="Button" parent="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/HSplitContainer"]
 visible = false
 margin_left = 428.0
-margin_right = 477.0
+margin_right = 511.0
 margin_bottom = 31.0
-text = "EDIT"
+text = "CHANGE"
 
-[node name="Response" type="Label" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="Response" type="Label" parent="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer"]
 visible = false
 margin_top = 107.0
 margin_right = 418.0
@@ -163,115 +171,219 @@ margin_bottom = 130.0
 custom_fonts/font = SubResource( 2 )
 align = 1
 
-[node name="CenterContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer"]
 margin_top = 120.0
 margin_right = 418.0
 margin_bottom = 148.0
 
-[node name="Confirm" type="Button" parent="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/CenterContainer"]
+[node name="Confirm" type="Button" parent="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/CenterContainer"]
 margin_left = 164.0
 margin_right = 254.0
 margin_bottom = 28.0
 text = "CONFIRM"
 
 [node name="ModpackExportContainer" type="MarginContainer" parent="ModDisplay/VBoxContainer"]
-visible = false
-margin_top = 240.0
+margin_top = 204.0
 margin_right = 1024.0
-margin_bottom = 564.0
+margin_bottom = 539.0
 custom_constants/margin_right = 45
 custom_constants/margin_top = -35
 custom_constants/margin_left = 45
 
-[node name="PanelContainer" type="PanelContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer"]
 margin_left = 45.0
 margin_top = -35.0
 margin_right = 979.0
-margin_bottom = 324.0
+margin_bottom = 335.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer"]
+margin_right = 934.0
+margin_bottom = 338.0
+
+[node name="MarginContainer" type="MarginContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer"]
 margin_left = 3.0
 margin_right = 931.0
-margin_bottom = 359.0
+margin_bottom = 338.0
+custom_constants/margin_right = 15
+custom_constants/margin_top = 15
+custom_constants/margin_left = 15
+custom_constants/margin_bottom = 15
 
-[node name="LabelContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer"]
-margin_right = 928.0
-margin_bottom = 27.0
-
-[node name="Label" type="Label" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer/LabelContainer"]
-margin_left = 331.0
-margin_right = 596.0
-margin_bottom = 27.0
-custom_fonts/font = SubResource( 4 )
-text = "IMPORTED PROFILE MODS"
-
-[node name="ModpackNameContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer"]
-margin_top = 31.0
-margin_right = 928.0
-margin_bottom = 55.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer/ModpackNameContainer"]
-margin_left = 225.0
-margin_right = 703.0
-margin_bottom = 24.0
-
-[node name="ModpackNameInput" type="LineEdit" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer/ModpackNameContainer/HBoxContainer"]
-margin_right = 263.0
-margin_bottom = 24.0
-custom_constants/minimum_spaces = 52
-custom_fonts/font = SubResource( 6 )
-align = 1
-placeholder_text = "MODPACK NAME"
-placeholder_alpha = 0.4
-
-[node name="VersionNumber" type="LineEdit" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer/ModpackNameContainer/HBoxContainer"]
-margin_left = 267.0
-margin_right = 478.0
-margin_bottom = 24.0
-custom_constants/minimum_spaces = 52
-custom_fonts/font = SubResource( 5 )
-align = 1
-placeholder_text = "VERSION NUMBER EX: 1.0.0"
-placeholder_alpha = 0.4
-
-[node name="ModsContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer"]
-margin_top = 59.0
-margin_right = 928.0
-margin_bottom = 359.0
-
-[node name="ScrollContainer" type="ScrollContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer/ModsContainer"]
-margin_left = 64.0
-margin_right = 864.0
-margin_bottom = 300.0
-rect_min_size = Vector2( 800, 300 )
-scroll_horizontal_enabled = false
-
-[node name="GridContainer" type="GridContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/PanelContainer/VBoxContainer/ModsContainer/ScrollContainer"]
-margin_right = 800.0
-margin_bottom = 300.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/vseparation = 5
-custom_constants/hseparation = 5
-columns = 3
-
-[node name="ExportContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer"]
+[node name="MarginContainer" type="ReferenceRect" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer"]
 visible = false
-margin_top = 388.0
-margin_right = 1024.0
-margin_bottom = 416.0
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 913.0
+margin_bottom = 323.0
+rect_min_size = Vector2( 64, 64 )
+border_width = 3.0
+
+[node name="TextureRect" type="TextureRect" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/MarginContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -313.0
+margin_top = -147.0
+margin_right = -229.0
+margin_bottom = -63.0
+rect_min_size = Vector2( 64, 64 )
+texture = ExtResource( 5 )
+expand = true
+stretch_mode = 7
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button" type="Button" parent="ModDisplay/VBoxContainer/ExportContainer"]
-margin_left = 472.0
-margin_right = 551.0
+[node name="VBoxContainer" type="VBoxContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer"]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 913.0
+margin_bottom = 323.0
+custom_constants/separation = 15
+
+[node name="LabelContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_right = 898.0
+margin_bottom = 27.0
+
+[node name="Label" type="Label" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/LabelContainer"]
+margin_left = 316.0
+margin_right = 581.0
+margin_bottom = 27.0
+custom_fonts/font = SubResource( 4 )
+text = "IMPORTED PROFILE MODS"
+
+[node name="ModpackNameContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 42.0
+margin_right = 898.0
+margin_bottom = 93.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModpackNameContainer"]
+margin_left = 231.0
+margin_right = 666.0
+margin_bottom = 51.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModpackNameContainer/VBoxContainer"]
+margin_right = 435.0
+margin_bottom = 28.0
+
+[node name="ModpackNameInput" type="LineEdit" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModpackNameContainer/VBoxContainer/HBoxContainer"]
+margin_right = 303.0
+margin_bottom = 28.0
+custom_constants/minimum_spaces = 60
+custom_fonts/font = SubResource( 6 )
+align = 1
+editable = false
+placeholder_text = "MODPACK NAME"
+placeholder_alpha = 0.4
+
+[node name="VersionNumber" type="LineEdit" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModpackNameContainer/VBoxContainer/HBoxContainer"]
+margin_left = 307.0
+margin_right = 382.0
+margin_bottom = 28.0
+custom_constants/minimum_spaces = 18
+custom_fonts/font = SubResource( 5 )
+align = 1
+editable = false
+placeholder_text = "1.0.0"
+placeholder_alpha = 0.4
+
+[node name="EditInfo" type="Button" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModpackNameContainer/VBoxContainer/HBoxContainer"]
+margin_left = 386.0
+margin_right = 435.0
+margin_bottom = 28.0
+text = "EDIT"
+
+[node name="LineEdit" type="LineEdit" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModpackNameContainer/VBoxContainer"]
+margin_top = 32.0
+margin_right = 435.0
+margin_bottom = 51.0
+custom_fonts/font = SubResource( 8 )
+align = 1
+editable = false
+placeholder_text = "DESCRIPTION"
+placeholder_alpha = 0.4
+
+[node name="ModsContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 108.0
+margin_right = 898.0
+margin_bottom = 308.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModsContainer"]
+margin_left = 49.0
+margin_right = 849.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 800, 200 )
+scroll_horizontal_enabled = false
+
+[node name="GridContainer" type="GridContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModsContainer/ScrollContainer"]
+margin_right = 800.0
+margin_bottom = 200.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/vseparation = 5
+custom_constants/hseparation = 5
+
+[node name="ExportContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer"]
+margin_top = 342.0
+margin_right = 934.0
+margin_bottom = 370.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/ExportContainer"]
+margin_left = 427.0
+margin_right = 506.0
 margin_bottom = 28.0
 text = "EXPORT"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="CenterContainer" type="CenterContainer" parent="ModDisplay/VBoxContainer"]
+margin_top = 543.0
+margin_right = 1024.0
+margin_bottom = 543.0
+
+[node name="DescriptionContainer" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PopupPanel" type="PopupPanel" parent="DescriptionContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -150.0
+margin_top = -100.0
+margin_right = 150.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 300, 200 )
+
+[node name="Description" type="TextEdit" parent="DescriptionContainer/PopupPanel"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -146.0
+margin_top = -96.0
+margin_right = 146.0
+margin_bottom = 96.0
+custom_fonts/font = SubResource( 7 )
+text = "WRAPPED TEXT EXAMPLE OIAJWDOIAJWDOIJAWODIJAOWIDJOIWAJDOIJWAODIJOWIAJDOIJAWDOIJWOAIJDOAWIJDOIJAWDOIJWAOIDJOIWJA"
+highlight_current_line = true
+wrap_enabled = true
+caret_blink = true
 
 [node name="Result" type="RichTextLabel" parent="."]
 visible = false
@@ -295,7 +407,9 @@ __meta__ = {
 }
 
 [connection signal="request_completed" from="SceneManager/HTTPRequest" to="SceneManager" method="_on_HTTPRequest_request_completed"]
-[connection signal="text_changed" from="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HSplitContainer/CodeInput" to="SceneManager" method="_on_CodeInput_text_changed"]
-[connection signal="text_entered" from="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HSplitContainer/CodeInput" to="SceneManager" method="_on_CodeInput_text_entered"]
-[connection signal="pressed" from="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/HSplitContainer/Edit" to="SceneManager" method="_on_Edit_pressed"]
-[connection signal="pressed" from="ModDisplay/VBoxContainer/MarginContainer/VBoxContainer/VBoxContainer/CenterContainer/Confirm" to="SceneManager" method="_on_Confirm_pressed"]
+[connection signal="resized" from="ModDisplay" to="SceneManager" method="_on_ModDisplay_resized"]
+[connection signal="text_changed" from="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/HSplitContainer/CodeInput" to="SceneManager" method="_on_CodeInput_text_changed"]
+[connection signal="text_entered" from="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/HSplitContainer/CodeInput" to="SceneManager" method="_on_CodeInput_text_entered"]
+[connection signal="pressed" from="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/HSplitContainer/Change" to="SceneManager" method="_on_Change_pressed"]
+[connection signal="pressed" from="ModDisplay/VBoxContainer/VBoxContainer/VBoxContainer/CenterContainer/Confirm" to="SceneManager" method="_on_Confirm_pressed"]
+[connection signal="pressed" from="ModDisplay/VBoxContainer/ModpackExportContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ModpackNameContainer/VBoxContainer/HBoxContainer/EditInfo" to="SceneManager" method="_on_EditInfo_pressed"]
