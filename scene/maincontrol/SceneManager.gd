@@ -9,43 +9,60 @@ export(NodePath) var modDisplayPath
 export(NodePath) var codeInputPath
 export(NodePath) var responsePath
 export(NodePath) var confirmPath
-export(NodePath) var resultPath
 export(NodePath) var modExportPath
 
 export(NodePath) var changePath
 export(NodePath) var gridPath
 export(NodePath) var scrollPath
 
+export(NodePath) var editPopupPath
+
+export(NodePath) var modpackNameEditPath
+export(NodePath) var websiteEditPath
+export(NodePath) var descriptionEditPath
+
+export(NodePath) var majorPath
+export(NodePath) var minorPath
+export(NodePath) var patchPath
+
+export(NodePath) var modpackNamePath
+export(NodePath) var websitePath
+export(NodePath) var descriptionPath
+export(NodePath) var versionPath
+
+export(NodePath) var exportPathPath
+
+
 onready var modDisplay : Control = get_node(modDisplayPath)
 onready var codeInput : LineEdit = get_node(codeInputPath)
 onready var response : Label = get_node(responsePath)
 onready var confirm : Button = get_node(confirmPath)
-onready var resultText : RichTextLabel = get_node(resultPath)
 onready var modExport : MarginContainer = get_node(modExportPath)
 
 onready var change : Button = get_node(changePath)
 onready var grid : GridContainer = get_node(gridPath)
 onready var scroll : ScrollContainer = get_node(scrollPath)
 
-var mods : Array
-	
-func _on_CodeInput_text_changed(new_text : String):
-	codeInput.text = new_text.replace(" ", "")
-	response.text = ""
-	response.visible = false
+onready var editPopup : ConfirmationDialog = get_node(editPopupPath)
 
-func _on_Confirm_pressed() -> void:
-	handleConfirm()
-	
-func _on_CodeInput_text_entered(new_text):
-	if !confirm.disabled:
-		handleConfirm()
-	
-func _on_Change_pressed():
-	unload_Profile()
-	
-func _on_EditInfo_pressed():
-	pass # Replace with function body.
+onready var modpackNameEdit = get_node(modpackNameEditPath)
+onready var websiteEdit = get_node(websiteEditPath)
+onready var descriptionEdit : TextEdit = get_node(descriptionEditPath)
+
+onready var major : SpinBox = get_node(majorPath)
+onready var minor : SpinBox = get_node(minorPath)
+onready var patch : SpinBox = get_node(patchPath)
+
+onready var modpackName = get_node(modpackNamePath)
+onready var website = get_node(websitePath)
+onready var description = get_node(descriptionPath)
+onready var version = get_node(versionPath)
+
+onready var exportPath = get_node(exportPathPath)
+
+onready var timer = $Timer
+
+var mods : Array = []
 
 func handleConfirm():
 	confirm.disabled = true
@@ -53,7 +70,7 @@ func handleConfirm():
 	if input == "":
 		response("Input the exported code first.")
 		return
-	var error = $HTTPRequest.request("https://r2modman-hastebin.herokuapp.com/documents/" + input)
+	var error = $HTTPRequest.request("https://otdan.com/thunderstore?code=" + input)
 	if error != OK:
 		response("An error occured, try later if problem persists.")
 
@@ -63,12 +80,16 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	if response == "":
 		response("Invalid code")
 		return
-		
+	
 	if response == '{"message":"Paste not found."}':
 		response("Invalid code")
 		return
 	
 	if response.begins_with("Cannot GET"):
+		response("Invalid code")
+		return
+		
+	if response.length() < 100:
 		response("Invalid code")
 		return
 	
@@ -88,7 +109,6 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 			response("Failed to load profile.")
 		else:
 			var fileContent = profileFile.get_string_from_utf8()
-			resultText.text = fileContent
 			load_Profile(fileContent)
 	else:
 		response('Failed to load zip file.')
@@ -106,7 +126,13 @@ func unload_Profile():
 	codeInput.text = ""
 	modExport.visible = false
 	change.visible = false
-	
+	delete_children(grid)
+
+func delete_children(node):
+	for n in node.get_children():
+		node.remove_child(n)
+		n.queue_free()
+
 func load_Profile(var profile : String):
 	confirm.visible = false
 	response.visible = false
@@ -133,18 +159,115 @@ func load_Profile(var profile : String):
 		var patch : int = version["patch"]
 		
 		var modInstance = modClass.new(mod, creator, major, minor, patch, enabled)
-		mods.append(modInstance)
-		var modCheckButton : CheckButton = CheckButton.new()
-		modCheckButton.set_name(modInstance.get_mod_string())
-		if mod.length() > 15:
-			modCheckButton.text = mod.substr(0, 15)
-		else:
-			modCheckButton.text = mod
-		modCheckButton.pressed = enabled
-		grid.add_child(modCheckButton)
+		self.mods.append(modInstance)
+		grid.add_child(modInstance.get_button())
+
+func _on_CodeInput_text_changed(new_text : String):
+	var workText : String = new_text
+	if workText.length() > 15:
+		workText = workText.substr(0, 15)
+	if " " in workText:
+		workText = workText.replace(" ", "")
+		
+	codeInput.text = workText
+	response.text = ""
+	response.visible = false
+	codeInput.caret_position = workText.length()
+
+func _on_Confirm_pressed() -> void:
+	handleConfirm()
+	
+func _on_CodeInput_text_entered(new_text):
+	if !confirm.disabled:
+		handleConfirm()
+	
+func _on_Change_pressed():
+	unload_Profile()
+	
+func _on_EditInfo_pressed():
+	var screenSize = scroll.get_viewport_rect().size
+	editPopup.popup_centered(Vector2(screenSize.x / 3, screenSize.y / 2))
+	pass # Replace with function body.
 
 func _on_ModDisplay_resized():
 	var screenSize = scroll.get_viewport_rect().size
-	scroll.rect_min_size = Vector2(screenSize.x / 2, screenSize.y / 2.4)
+	scroll.rect_min_size = Vector2(screenSize.x / 2, screenSize.y / 2.3 - 50)
 	
 	grid.columns = screenSize.x / 240
+	editPopup.hide()
+
+func _on_Description_text_changed():
+	var descriptionText = descriptionEdit.text
+	if descriptionText.length() > 250:
+		descriptionEdit.text = descriptionText.substr(0, 250)
+
+func _on_ConfirmButton_pressed():
+	editPopup.hide()
+	pass # Replace with function body.
+	
+func _ready():
+	get_tree().connect("files_dropped", self, "_on_files_dropped")
+	var previous_color : Color = modpackName.get_color("font_color_uneditable")
+	timer.connect("timeout", self, "change_color_back", [previous_color])
+	
+func _on_files_dropped(files, screen):
+	print(files)
+
+func _on_ConfirmDialog_confirmed():
+	modpackName.text = modpackNameEdit.text
+	version.text = str(major.value) + "." + str(minor.value) + "." + str(patch.value)
+	website.text = websiteEdit.text
+	description.text = descriptionEdit.text
+
+func _on_ExportButton_pressed():
+	var outDictionary : Dictionary
+	var outMods : Array
+	for mod in mods:
+		if mod.enabled:
+			outMods.append(mod.get_mod_string())
+	
+	if change_color():
+		return
+	
+	outDictionary["name"] = modpackName.text
+	outDictionary["version_number"] = version.text
+	outDictionary["website_url"] = website.text
+	outDictionary["description"] = description.text
+	outDictionary["dependencies"] = outMods
+	var outJson = JSON.print(outDictionary, "\t")
+	
+	var file = File.new()
+	file.open(exportPath.text + "\\manifest.json", file.WRITE)
+	file.store_line(outJson)
+	file.close()
+
+func change_color() -> bool:
+	var change : bool = false
+	if modpackName.text == "":
+		modpackName.add_color_override("font_color_uneditable", Color(1, 0, 0, 0.8))
+		change = true
+	if version.text == "":
+		version.add_color_override("font_color_uneditable", Color(1, 0, 0, 0.8))
+		change = true
+	if website.text == "":
+		website.add_color_override("font_color_uneditable", Color(1, 0, 0, 0.8))
+		change = true
+	if description.text == "":
+		description.add_color_override("font_color_uneditable", Color(1, 0, 0, 0.8))
+		change = true
+	if exportPath.text == "":
+		exportPath.add_color_override("font_color", Color(1, 0, 0, 0.8))
+		change = true
+		
+	if change:
+		timer.set_wait_time(1)
+		timer.start()
+		
+	return change
+	
+func change_color_back(var previous_color):
+	modpackName.add_color_override("font_color_uneditable", previous_color)
+	version.add_color_override("font_color_uneditable", previous_color)
+	website.add_color_override("font_color_uneditable", previous_color)
+	description.add_color_override("font_color_uneditable", previous_color)
+	exportPath.add_color_override("font_color", previous_color)
