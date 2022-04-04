@@ -30,8 +30,6 @@ export(NodePath) var websitePath
 export(NodePath) var descriptionPath
 export(NodePath) var versionPath
 
-export(NodePath) var exportPathPath
-
 
 onready var modDisplay : Control = get_node(modDisplayPath)
 onready var codeInput : LineEdit = get_node(codeInputPath)
@@ -58,8 +56,6 @@ onready var website = get_node(websitePath)
 onready var description = get_node(descriptionPath)
 onready var version = get_node(versionPath)
 
-onready var exportPath = get_node(exportPathPath)
-
 onready var timer = $Timer
 
 var mods : Array = []
@@ -70,7 +66,7 @@ func handleConfirm():
 	if input == "":
 		response("Input the exported code first.")
 		return
-	var error = $HTTPRequest.request("https://otdan.com/thunderstore?code=" + input)
+	var error = $HTTPRequest.request("https://otdan.com/api/thunderstore?code=" + input)
 	if error != OK:
 		response("An error occured, try later if problem persists.")
 
@@ -140,8 +136,8 @@ func load_Profile(var profile : String):
 	modExport.visible = true
 	change.visible = true
 	
-	var value : Dictionary = yaml.parse(profile)
-	var profileName = value["profileName"]
+	var value = yaml.parse(profile).result as Dictionary
+	var profileName = value["profileName"] 
 	
 	var mods = value["mods"]
 	for loopMod in mods:
@@ -236,10 +232,12 @@ func _on_ExportButton_pressed():
 	outDictionary["dependencies"] = outMods
 	var outJson = JSON.print(outDictionary, "\t")
 	
-	var file = File.new()
-	file.open(exportPath.text + "\\manifest.json", file.WRITE)
-	file.store_line(outJson)
-	file.close()
+#	var file = File.new()
+#	file.open(exportPath.text + "\\manifest.json", file.WRITE)
+#	file.store_line(outJson)
+#	file.close()
+	
+	JavaScript.download_buffer(outJson.to_utf8(), "manifest.json")
 
 func change_color() -> bool:
 	var change : bool = false
@@ -255,9 +253,6 @@ func change_color() -> bool:
 	if description.text == "":
 		description.add_color_override("font_color_uneditable", Color(1, 0, 0, 0.8))
 		change = true
-	if exportPath.text == "":
-		exportPath.add_color_override("font_color", Color(1, 0, 0, 0.8))
-		change = true
 		
 	if change:
 		timer.set_wait_time(1)
@@ -270,4 +265,3 @@ func change_color_back(var previous_color):
 	version.add_color_override("font_color_uneditable", previous_color)
 	website.add_color_override("font_color_uneditable", previous_color)
 	description.add_color_override("font_color_uneditable", previous_color)
-	exportPath.add_color_override("font_color", previous_color)
